@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -27,7 +28,8 @@ import { AccountDoesNotExistExceptionFilter } from '@/routes/email/exception-fil
 import { EditEmailDto } from '@/routes/email/entities/edit-email-dto.entity';
 import { EmailEditGuard } from '@/routes/email/guards/email-edit.guard';
 import { EmailEditMatchesExceptionFilter } from '@/routes/email/exception-filters/email-edit-matches.exception-filter';
-import { EmailEditTimespanExceptionFilter } from '@/routes/email/exception-filters/email-edit-timespan.exception-filter';
+import { EmailRetrievalGuard } from '@/routes/email/guards/email-retrieval.guard';
+import { Email } from '@/routes/email/entities/email.entity';
 
 @ApiTags('email')
 @Controller({
@@ -37,6 +39,24 @@ import { EmailEditTimespanExceptionFilter } from '@/routes/email/exception-filte
 @ApiExcludeController()
 export class EmailController {
   constructor(private readonly service: EmailService) {}
+
+  @Get(':signer')
+  @UseGuards(
+    EmailRetrievalGuard,
+    TimestampGuard(5 * 60 * 1000), // 5 minutes
+  )
+  @UseFilters(AccountDoesNotExistExceptionFilter)
+  async getEmail(
+    @Param('chainId') chainId: string,
+    @Param('safeAddress') safeAddress: string,
+    @Param('signer') signer: string,
+  ): Promise<Email> {
+    return this.service.getEmail({
+      chainId,
+      safeAddress,
+      signer,
+    });
+  }
 
   @Post('')
   @UseGuards(
@@ -117,7 +137,6 @@ export class EmailController {
     OnlySafeOwnerGuard,
   )
   @UseFilters(
-    EmailEditTimespanExceptionFilter,
     EmailEditMatchesExceptionFilter,
     AccountDoesNotExistExceptionFilter,
   )

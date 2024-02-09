@@ -23,7 +23,7 @@ import { chainBuilder } from '@/domain/chains/entities/__tests__/chain.builder';
 import { safeBuilder } from '@/domain/safe/entities/__tests__/safe.builder';
 import { getAddress } from 'viem';
 import { EmailControllerModule } from '@/routes/email/email.controller.module';
-import { AccountDoesNotExistError } from '@/datasources/account/errors/account-does-not-exist.error';
+import { AccountDoesNotExistError } from '@/domain/account/errors/account-does-not-exist.error';
 import { EmailApiModule } from '@/datasources/email-api/email-api.module';
 import { TestEmailApiModule } from '@/datasources/email-api/__tests__/test.email-api.module';
 import { IEmailApi } from '@/domain/interfaces/email-api.interface';
@@ -89,7 +89,7 @@ describe('Email controller delete email tests', () => {
     const message = `email-delete-${chain.chainId}-${safeAddress}-${signerAddress}-${timestamp}`;
     const signature = await signer.signMessage({ message });
     accountDataSource.getAccount.mockResolvedValue(account);
-    accountDataSource.deleteAccount.mockImplementation(() => Promise.resolve());
+    accountDataSource.deleteAccount.mockResolvedValue(account);
     emailApi.deleteEmailAddress.mockResolvedValue();
 
     await request(app.getHttpServer())
@@ -106,7 +106,7 @@ describe('Email controller delete email tests', () => {
     expect(accountDataSource.deleteAccount).toHaveBeenCalledTimes(1);
   });
 
-  it("returns 404 if trying to deleting an email that doesn't exist", async () => {
+  it("returns 204 if trying to deleting an email that doesn't exist", async () => {
     const chain = chainBuilder().build();
     const timestamp = jest.now();
     const privateKey = generatePrivateKey();
@@ -141,11 +141,8 @@ describe('Email controller delete email tests', () => {
         timestamp: timestamp,
         signature: signature,
       })
-      .expect(404)
-      .expect({
-        statusCode: 404,
-        message: `No email address was found for the provided signer ${signerAddress}.`,
-      });
+      .expect(204)
+      .expect({});
 
     expect(emailApi.deleteEmailAddress).toHaveBeenCalledTimes(0);
     expect(accountDataSource.deleteAccount).toHaveBeenCalledTimes(0);

@@ -1,6 +1,14 @@
+import { Account } from '@/domain/account/entities/account.entity';
+
 export const IAccountRepository = Symbol('IAccountRepository');
 
 export interface IAccountRepository {
+  getAccount(args: {
+    chainId: string;
+    safeAddress: string;
+    signer: string;
+  }): Promise<Account>;
+
   /**
    * Gets the verified emails associated with a Safe address.
    *
@@ -84,7 +92,6 @@ export interface IAccountRepository {
    * @param args.emailAddress - the email address to store
    * @param args.signer - the owner address to which we should link the email address to
    *
-   * @throws {EditTimespanError} - if trying to edit again within email.verificationCode.resendLockWindowMs
    * @throws {EmailEditMatchesError} - if trying to apply edit with same email address as current one
    */
   editEmail(args: {
