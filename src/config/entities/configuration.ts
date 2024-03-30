@@ -55,6 +55,7 @@ export default () => ({
             81: { nativeCoin: 'astar', chainName: 'shibuya' },
             1261120: { nativeCoin: 'ethereum', chainName: 'zkatana' },
             3776: { nativeCoin: 'ethereum', chainName: 'astar-zkevm' },
+            6038361: { nativeCoin: 'ethereum', chainName: 'zKyoto' },
           },
         },
       },
