@@ -67,6 +67,10 @@ export default () => ({
             8453: { nativeCoin: 'ethereum', chainName: 'base' },
             84531: { nativeCoin: 'ethereum', chainName: 'base' },
             84532: { nativeCoin: 'ethereum', chainName: 'base' },
+            592: { nativeCoin: 'astar', chainName: 'astar' },
+            336: { nativeCoin: 'shiden', chainName: 'shiden' },
+            81: { nativeCoin: 'astar', chainName: 'shibuya' },
+            1261120: { nativeCoin: 'ethereum', chainName: 'zkatana' },
           },
           highRefreshRateTokens:
             process.env.HIGH_REFRESH_RATE_TOKENS?.split(',') ?? [],
